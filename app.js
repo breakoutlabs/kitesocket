@@ -15,7 +15,7 @@ app.get("/kite/stream", (req, res) => {
   res.setHeader("Connection", "keep-alive");
   res.flushHeaders();
 
-  const tokens = req.body.tokens || [];
+  const tokens = req.query.tokens ? req.query.tokens.split(",").map(Number) : [];
 
   var ticker = new KiteTicker({
     api_key: "x6uczl4asdrgqdt8",
