@@ -25,7 +25,7 @@ app.get("/kite/stream", (req, res) => {
   ticker.on("connect", subscribe);
 
   function onTicks(ticks) {
-    console.log("Ticks", ticks);
+    // console.log("Ticks", ticks);
     res.write(`data: ${JSON.stringify(ticks)}\n\n`);
   }
 
@@ -37,9 +37,10 @@ app.get("/kite/stream", (req, res) => {
 
   req.on("close", () => {
     console.log("Client disconnected");
-    ticker.disconnect();
-    res.end();
+    // ticker.disconnect();
+    // res.end();
   });
+  ticker.connect();
 });
 
 app.listen(port, () => {
