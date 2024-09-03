@@ -15,6 +15,8 @@ app.get("/kite/stream", (req, res) => {
   res.setHeader("Connection", "keep-alive");
   res.flushHeaders();
 
+  const tokens = req.body.tokens || [];
+
   var ticker = new KiteTicker({
     api_key: "x6uczl4asdrgqdt8",
     access_token: "s1UNdoUI3yie0hVpcepI97kP7X3q3Xxi",
@@ -25,14 +27,17 @@ app.get("/kite/stream", (req, res) => {
   ticker.on("connect", subscribe);
 
   function onTicks(ticks) {
-    // console.log("Ticks", ticks);
+    console.log("Ticks", ticks);
     res.write(`data: ${JSON.stringify(ticks)}\n\n`);
   }
 
   function subscribe() {
-    var items = [31124226, 20656898];
-    ticker.subscribe(items);
-    ticker.setMode(ticker.modeFull, items);
+    if (tokens.length > 0) {
+      ticker.subscribe(tokens);
+      ticker.setMode(ticker.modeFull, tokens);
+    } else {
+      console.log("No tokens provided for subscription");
+    }
   }
 
   req.on("close", () => {
@@ -40,7 +45,7 @@ app.get("/kite/stream", (req, res) => {
     // ticker.disconnect();
     // res.end();
   });
-  ticker.connect();
+  //   ticker.connect();
 });
 
 app.listen(port, () => {
