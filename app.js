@@ -27,7 +27,7 @@ app.get("/kite/stream", (req, res) => {
   ticker.on("connect", subscribe);
 
   function onTicks(ticks) {
-    //console.log("Ticks", ticks);
+    console.log("Ticks", ticks);
     res.write(`data: ${JSON.stringify(ticks)}\n\n`);
   }
 
