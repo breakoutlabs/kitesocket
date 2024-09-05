@@ -19,7 +19,7 @@ app.get("/kite/stream", (req, res) => {
 
   var ticker = new KiteTicker({
     api_key: "x6uczl4asdrgqdt8",
-    access_token: "yeJUgAuKBIjVOrU6Bum3gxMAGwYZvPbd",
+    access_token: "yq1wtFbv77mQaYGy0yxjBHnMY6uimF4L",
   });
 
   ticker.connect();
