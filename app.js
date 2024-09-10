@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const axios = require("axios"); // Import axios for making HTTP requests
 
 const app = express();
 const port = 3000;
@@ -28,23 +27,8 @@ app.get("/kite/stream", (req, res) => {
   ticker.on("connect", subscribe);
 
   function onTicks(ticks) {
-    // Send tick data to the client
+    //console.log("Ticks", ticks);
     res.write(`data: ${JSON.stringify(ticks)}\n\n`);
-
-    // Prepare data for Xano API
-    const xanoData = {
-      data: ticks, // Sending the ticks array directly
-    };
-
-    // POST data to the Xano API
-    axios
-      .post("https://xsnf-z0g0-zmkj.n7d.xano.io/api:mAgbAr1J/update_socket_data", xanoData)
-      .then((response) => {
-        console.log("Data successfully posted to Xano:", response.data);
-      })
-      .catch((error) => {
-        console.error("Error posting data to Xano:", error);
-      });
   }
 
   function subscribe() {
@@ -61,6 +45,7 @@ app.get("/kite/stream", (req, res) => {
     // ticker.disconnect();
     // res.end();
   });
+  //   ticker.connect();
 });
 
 app.listen(port, () => {
