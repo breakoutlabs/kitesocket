@@ -10,11 +10,6 @@ app.use(cors());
 var KiteTicker = require("kiteconnect").KiteTicker;
 
 app.get("/kite/stream", (req, res) => {
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-  res.flushHeaders();
-
   const tokens = req.query.tokens ? req.query.tokens.split(",").map(Number) : [];
 
   var ticker = new KiteTicker({
@@ -22,13 +17,20 @@ app.get("/kite/stream", (req, res) => {
     access_token: "1lNjSz094r0yStAkY2nHrDtLw0qb5e0u",
   });
 
+  let ticksArray = [];
+
   ticker.connect();
   ticker.on("ticks", onTicks);
   ticker.on("connect", subscribe);
 
   function onTicks(ticks) {
-    //console.log("Ticks", ticks);
-    res.write(`data: ${JSON.stringify(ticks)}\n\n`);
+    ticksArray.push(...ticks);
+
+    // You can add logic to send data periodically
+    if (ticksArray.length > 10) {
+      res.json(ticksArray);
+      ticksArray = []; // Reset after sending
+    }
   }
 
   function subscribe() {
@@ -42,11 +44,10 @@ app.get("/kite/stream", (req, res) => {
 
   req.on("close", () => {
     console.log("Client disconnected");
-    // ticker.disconnect();
-    // res.end();
+    res.json(ticksArray); // Send whatever ticks were received before disconnect
   });
-  //   ticker.connect();
 });
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
